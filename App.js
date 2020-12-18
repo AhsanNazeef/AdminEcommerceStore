@@ -36,7 +36,7 @@ const AppButton = (props) => {
 		</TouchableOpacity>
 	);
 };
-const HomeScreen = ({ navigation }) => {
+const HomeScreen = ({ navigation, route }) => {
 	const [getPrice, setPrice] = useState();
 	const [getFPrice, setFPrice] = useState();
 	const [getDiscountP, setDiscountP] = useState(0);
@@ -71,11 +71,12 @@ const HomeScreen = ({ navigation }) => {
 		setFPrice(0);
 		setDiscountP(0);
 		setSave(0);
+		setdis(true);
 		alert("Record Added Successfully");
 	};
 
 	const disabler = () => {
-		if (getFPrice <= 0 || getPrice == "") {
+		if (getPrice == "" || getPrice <= 0) {
 			setdis(true);
 		} else {
 			setdis(false);
@@ -197,10 +198,8 @@ const History = ({ navigation, route }) => {
 				break;
 			}
 		}
+		setData([...getData]);
 	};
-
-	removeItem(1);
-	console.log(getData);
 	return (
 		<View>
 			<View style={styles.items}>
@@ -211,18 +210,20 @@ const History = ({ navigation, route }) => {
 			<ScrollView>
 				{getData.map((item) => (
 					<View style={styles.itemsMain}>
-						<View style={styles.items}>
-							<Text style={{ fontSize: 20, color: "white" }}>
-								{item.OriginalPrice}{" "}
-							</Text>
-							<Text style={{ fontSize: 20, color: "white" }}>
-								{item.DiscountP}
-							</Text>
-							<Text style={{ fontSize: 20, color: "white" }}>
-								{item.FinalP}
-							</Text>
-						</View>
-						<TouchableOpacity>
+						<TouchableOpacity style={styles.items} key={item.key}>
+							<View style={styles.items}>
+								<Text style={{ fontSize: 20, color: "white" }}>
+									{item.OriginalPrice}{" "}
+								</Text>
+								<Text style={{ fontSize: 20, color: "white" }}>
+									{item.DiscountP}
+								</Text>
+								<Text style={{ fontSize: 20, color: "white" }}>
+									{item.FinalP}
+								</Text>
+							</View>
+						</TouchableOpacity>
+						<TouchableOpacity onPress={removeItem.bind(this, item.key)}>
 							<Text
 								style={{
 									fontSize: 20,
@@ -328,7 +329,8 @@ const styles = StyleSheet.create({
 		marginTop: 20,
 	},
 	items: {
-		flex: 1,
+		paddingLeft: 5,
+		paddingRight: 5,
 		flexDirection: "row",
 		alignItems: "center",
 		justifyContent: "space-between",
